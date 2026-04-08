@@ -1,0 +1,15 @@
+{
+  dinosaurs: [
+    {
+      id: "1",
+      name: "Blue",
+      species: "velociraptor",
+      diet: "carnivore",
+      paddock: "B-12",
+      heartRate: 142,
+      dangerRating: 4,
+      containmentStatus: "breach",
+      lastFedAt: "2025-04-07T08:00:00Z",
+    },
+  ],
+}

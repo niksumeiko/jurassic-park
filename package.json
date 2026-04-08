@@ -1,0 +1,47 @@
+{
+    "name": "jurassic-park",
+    "version": "1.0.0",
+    "private": true,
+    "description": "A programming kata — React SPA with a Dinosaur paddock monitor",
+    "scripts": {
+        "start": "concurrently -k -s first -n app,api \"npx vite\" \"npx json-server db.json5\"",
+        "start:api": "npx json-server db.json5",
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "preview": "vite preview",
+        "lint": "eslint 'src/**/*.{ts,tsx}' --report-unused-disable-directives --fix",
+        "format": "prettier --write 'src/**/*.{ts,tsx,css,md}'",
+        "test:unit": "vitest run --sequence.concurrent --sequence.shuffle.tests",
+        "test:integration": "playwright test -c playwright-ct.config.ts --ui",
+        "test:integration:headless": "playwright test -c playwright-ct.config.ts"
+    },
+    "keywords": [],
+    "author": "Nik Sumeiko",
+    "license": "MIT",
+    "dependencies": {
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4",
+        "react-router-dom": "7.14"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@playwright/experimental-ct-react": "^1.59.1",
+        "@playwright/test": "^1.59.1",
+        "@tailwindcss/vite": "^4.2.2",
+        "@types/node": "^25.5.2",
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.3",
+        "@vitejs/plugin-react": "^6.0.1",
+        "concurrently": "^9.2.1",
+        "eslint": "^10.2.0",
+        "eslint-plugin-react-hooks": "^7.1.0-canary-ed69815c-20260323",
+        "eslint-plugin-react-refresh": "^0.5.2",
+        "json-server": "^1.0.0-beta.5",
+        "prettier": "^3.8.1",
+        "tailwindcss": "^4.2.2",
+        "typescript": "^6.0.2",
+        "typescript-eslint": "^8.58.1",
+        "vite": "^8.0.7",
+        "vitest": "^4.1.3"
+    }
+}
