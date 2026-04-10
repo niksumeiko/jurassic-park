@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getFeedingUrgency } from './helpers/getFeedingUrgency';
+import { getLastFedLabel } from './helpers/getLastFedLabel';
 
 export type Dinosaur = {
     id: string;
@@ -35,15 +36,6 @@ export const PaddockMonitor = () => {
 
     const hoursSinceFeeding =
         (Date.now() - new Date(dinosaur.lastFedAt).getTime()) / 1000 / 60 / 60;
-
-    let lastFedLabel = '';
-    if (hoursSinceFeeding < 1) {
-        lastFedLabel = 'Less than an hour ago';
-    } else if (hoursSinceFeeding < 24) {
-        lastFedLabel = `${Math.floor(hoursSinceFeeding)} hours ago`;
-    } else {
-        lastFedLabel = `${Math.floor(hoursSinceFeeding / 24)} days ago`;
-    }
 
     let heartRateStatus = 'Normal';
     if (
@@ -136,7 +128,7 @@ export const PaddockMonitor = () => {
                 <div>
                     <dt className="text-sm text-gray-500">Last Fed</dt>
                     <dd>
-                        {lastFedLabel}{' '}
+                        {getLastFedLabel({ hoursSinceFeeding })}{' '}
                         <span
                             className={
                                 getFeedingUrgency({
