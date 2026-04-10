@@ -29,16 +29,32 @@ export function getContainmentDisplay({
     containmentStatus,
 }: GetContainmentDisplayArgs): GetContainmentDisplayReturn {
     if (containmentStatus === 'secured') {
-        return { color: ContainmentColor.Secured, label: ContainmentLabel.Secured };
+        return {
+            color: ContainmentColor.Secured,
+            label: ContainmentLabel.Secured,
+        };
     }
+
     if (containmentStatus === 'breach') {
-        return { color: ContainmentColor.Breach, label: ContainmentLabel.Breach };
+        return {
+            color: ContainmentColor.Breach,
+            label: ContainmentLabel.Breach,
+        };
     }
+
     if (containmentStatus === 'maintenance') {
-        return { color: ContainmentColor.Maintenance, label: ContainmentLabel.Maintenance };
+        return {
+            color: ContainmentColor.Maintenance,
+            label: ContainmentLabel.Maintenance,
+        };
     }
+
     if (containmentStatus === 'offline') {
-        return { color: ContainmentColor.Offline, label: ContainmentLabel.Offline };
+        return {
+            color: ContainmentColor.Offline,
+            label: ContainmentLabel.Offline,
+        };
     }
+
     return { color: ContainmentColor.Unknown, label: ContainmentLabel.Unknown };
 }

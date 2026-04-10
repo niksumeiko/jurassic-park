@@ -21,7 +21,9 @@ describe('getContainmentDisplay', () => {
     });
 
     it('should return maintenance display', () => {
-        const result = getContainmentDisplay({ containmentStatus: 'maintenance' });
+        const result = getContainmentDisplay({
+            containmentStatus: 'maintenance',
+        });
 
         expect(result).toEqual({
             color: 'bg-yellow-100 text-yellow-800',

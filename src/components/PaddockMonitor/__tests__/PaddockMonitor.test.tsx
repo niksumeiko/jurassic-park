@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/experimental-ct-react';
-import { App } from '../App';
+import { App } from '../../../App';
 
 function hoursAgo(hours: number): string {
     return new Date(Date.now() - hours * 60 * 60 * 1000).toISOString();
@@ -34,15 +34,11 @@ test('secured large carnivore with normal vitals shows low alert', async ({
     await expect(component.getByText('Secured')).toBeVisible();
     await expect(component.getByText('100 bpm')).toBeVisible();
     await expect(component.getByText('(Normal)')).toBeVisible();
-    await expect(
-        component.getByText('Less than an hour ago'),
-    ).toBeVisible();
+    await expect(component.getByText('Less than an hour ago')).toBeVisible();
     await expect(component.getByText('— Normal')).toBeVisible();
     await expect(component.getByText('1 / 5')).toBeVisible();
     await expect(component.getByText('Low')).toBeVisible();
-    await expect(
-        component.getByText(/ALERT LEVEL: MAXIMUM/),
-    ).not.toBeVisible();
+    await expect(component.getByText(/ALERT LEVEL: MAXIMUM/)).not.toBeVisible();
 });
 
 test('breach with elevated heart rate triggers maximum alert', async ({
@@ -77,9 +73,7 @@ test('breach with elevated heart rate triggers maximum alert', async ({
     await expect(component.getByText('8 hours ago')).toBeVisible();
     await expect(component.getByText('— Urgent')).toBeVisible();
     await expect(component.getByText('4 / 5')).toBeVisible();
-    await expect(
-        component.getByText('Maximum', { exact: true }),
-    ).toBeVisible();
+    await expect(component.getByText('Maximum', { exact: true })).toBeVisible();
     await expect(
         component.getByText(/ALERT LEVEL: MAXIMUM — Evacuate nearby sectors/),
     ).toBeVisible();
@@ -115,9 +109,7 @@ test('maintenance with critical vitals shows high alert', async ({
     await expect(component.getByText('— Critical')).toBeVisible();
     await expect(component.getByText('3 / 5')).toBeVisible();
     await expect(component.getByText('High')).toBeVisible();
-    await expect(
-        component.getByText(/ALERT LEVEL: MAXIMUM/),
-    ).not.toBeVisible();
+    await expect(component.getByText(/ALERT LEVEL: MAXIMUM/)).not.toBeVisible();
 });
 
 test('offline herbivore with elevated heart rate shows moderate alert', async ({
@@ -150,9 +142,7 @@ test('offline herbivore with elevated heart rate shows moderate alert', async ({
     await expect(component.getByText('— Urgent')).toBeVisible();
     await expect(component.getByText('2 / 5')).toBeVisible();
     await expect(component.getByText('Moderate')).toBeVisible();
-    await expect(
-        component.getByText(/ALERT LEVEL: MAXIMUM/),
-    ).not.toBeVisible();
+    await expect(component.getByText(/ALERT LEVEL: MAXIMUM/)).not.toBeVisible();
 });
 
 test('critical heart rate and high danger trigger maximum alert without breach', async ({
@@ -184,9 +174,7 @@ test('critical heart rate and high danger trigger maximum alert without breach',
     await expect(component.getByText('2 days ago')).toBeVisible();
     await expect(component.getByText('— Critical')).toBeVisible();
     await expect(component.getByText('5 / 5')).toBeVisible();
-    await expect(
-        component.getByText('Maximum', { exact: true }),
-    ).toBeVisible();
+    await expect(component.getByText('Maximum', { exact: true })).toBeVisible();
     await expect(
         component.getByText(/ALERT LEVEL: MAXIMUM — Evacuate nearby sectors/),
     ).toBeVisible();
