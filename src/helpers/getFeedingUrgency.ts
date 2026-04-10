@@ -5,7 +5,7 @@ interface GetFeedingUrgencyArgs {
     hoursSinceFeeding: number;
 }
 
-type GetFeedingUrgencyReturn = 'Normal' | 'Critical' | 'Urgent';
+export type GetFeedingUrgencyReturn = 'Normal' | 'Critical' | 'Urgent';
 
 export function getFeedingUrgency({
     diet,

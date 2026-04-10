@@ -8,7 +8,7 @@ interface GetParkAlertLevelArgs {
     species: Dinosaur['species'];
 }
 
-type GetParkAlertLevelReturn = 'Maximum' | 'High' | 'Moderate' | 'Low';
+export type GetParkAlertLevelReturn = 'Maximum' | 'High' | 'Moderate' | 'Low';
 
 export function getParkAlertLevel({
     containmentStatus,

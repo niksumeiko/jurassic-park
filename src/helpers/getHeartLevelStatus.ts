@@ -5,7 +5,7 @@ interface GetHeartLevelStatusArgs {
     heartRate: Dinosaur['heartRate'];
 }
 
-type GetHeartLevelStatusReturn = 'Elevated' | 'Critical' | 'Normal';
+export type GetHeartLevelStatusReturn = 'Elevated' | 'Critical' | 'Normal';
 
 export function getHeartLevelStatus({
     heartRate,
