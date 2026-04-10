@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { getFeedingUrgency } from './helpers/getFeedingUrgency';
 
-type Dinosaur = {
+export type Dinosaur = {
     id: string;
     name: string;
     species:
@@ -34,21 +35,6 @@ export const PaddockMonitor = () => {
 
     const hoursSinceFeeding =
         (Date.now() - new Date(dinosaur.lastFedAt).getTime()) / 1000 / 60 / 60;
-
-    let feedingUrgency = 'Normal';
-    if (dinosaur.diet === 'carnivore') {
-        if (hoursSinceFeeding > 12) {
-            feedingUrgency = 'Critical';
-        } else if (hoursSinceFeeding > 6) {
-            feedingUrgency = 'Urgent';
-        }
-    } else {
-        if (hoursSinceFeeding > 24) {
-            feedingUrgency = 'Critical';
-        } else if (hoursSinceFeeding > 12) {
-            feedingUrgency = 'Urgent';
-        }
-    }
 
     let lastFedLabel = '';
     if (hoursSinceFeeding < 1) {
@@ -153,14 +139,24 @@ export const PaddockMonitor = () => {
                         {lastFedLabel}{' '}
                         <span
                             className={
-                                feedingUrgency === 'Critical'
+                                getFeedingUrgency({
+                                    diet: dinosaur.diet,
+                                    hoursSinceFeeding,
+                                }) === 'Critical'
                                     ? 'text-red-600 font-bold'
-                                    : feedingUrgency === 'Urgent'
+                                    : getFeedingUrgency({
+                                            diet: dinosaur.diet,
+                                            hoursSinceFeeding,
+                                        }) === 'Urgent'
                                       ? 'text-yellow-600'
                                       : ''
                             }
                         >
-                            — {feedingUrgency}
+                            —{' '}
+                            {getFeedingUrgency({
+                                diet: dinosaur.diet,
+                                hoursSinceFeeding,
+                            })}
                         </span>
                     </dd>
                 </div>
