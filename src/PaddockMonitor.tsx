@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getFeedingUrgency } from './helpers/getFeedingUrgency';
 import { getLastFedLabel } from './helpers/getLastFedLabel';
+import { getHeartLevelStatus } from './helpers/getHeartLevelStatus';
 
 export type Dinosaur = {
     id: string;
@@ -37,26 +38,6 @@ export const PaddockMonitor = () => {
     const hoursSinceFeeding =
         (Date.now() - new Date(dinosaur.lastFedAt).getTime()) / 1000 / 60 / 60;
 
-    let heartRateStatus = 'Normal';
-    if (
-        dinosaur.species === 'tyrannosaurus' ||
-        dinosaur.species === 'brachiosaurus'
-    ) {
-        if (dinosaur.heartRate > 120) {
-            heartRateStatus = 'Elevated';
-        }
-        if (dinosaur.heartRate > 160) {
-            heartRateStatus = 'Critical';
-        }
-    } else {
-        if (dinosaur.heartRate > 150) {
-            heartRateStatus = 'Elevated';
-        }
-        if (dinosaur.heartRate > 200) {
-            heartRateStatus = 'Critical';
-        }
-    }
-
     let statusColor = 'bg-gray-100 text-gray-800';
     let statusLabel = 'Unknown';
     if (dinosaur.containmentStatus === 'secured') {
@@ -76,10 +57,20 @@ export const PaddockMonitor = () => {
     let parkAlertLevel = 'Low';
     if (
         dinosaur.containmentStatus === 'breach' ||
-        (dinosaur.dangerRating >= 4 && heartRateStatus === 'Critical')
+        (dinosaur.dangerRating >= 4 &&
+            getHeartLevelStatus({
+                heartRate: dinosaur.heartRate,
+                species: dinosaur.species,
+            }) === 'Critical')
     ) {
         parkAlertLevel = 'Maximum';
-    } else if (dinosaur.dangerRating >= 3 && heartRateStatus !== 'Normal') {
+    } else if (
+        dinosaur.dangerRating >= 3 &&
+        getHeartLevelStatus({
+            heartRate: dinosaur.heartRate,
+            species: dinosaur.species,
+        }) !== 'Normal'
+    ) {
         parkAlertLevel = 'High';
     } else if (dinosaur.dangerRating >= 2) {
         parkAlertLevel = 'Moderate';
@@ -114,14 +105,25 @@ export const PaddockMonitor = () => {
                         {dinosaur.heartRate} bpm{' '}
                         <span
                             className={
-                                heartRateStatus === 'Critical'
+                                getHeartLevelStatus({
+                                    heartRate: dinosaur.heartRate,
+                                    species: dinosaur.species,
+                                }) === 'Critical'
                                     ? 'text-red-600 font-bold'
-                                    : heartRateStatus === 'Elevated'
+                                    : getHeartLevelStatus({
+                                            heartRate: dinosaur.heartRate,
+                                            species: dinosaur.species,
+                                        }) === 'Elevated'
                                       ? 'text-yellow-600'
                                       : 'text-green-600'
                             }
                         >
-                            ({heartRateStatus})
+                            (
+                            {getHeartLevelStatus({
+                                heartRate: dinosaur.heartRate,
+                                species: dinosaur.species,
+                            })}
+                            )
                         </span>
                     </dd>
                 </div>
