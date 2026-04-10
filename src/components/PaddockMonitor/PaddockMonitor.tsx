@@ -1,24 +1,19 @@
-import { useEffect, useState } from 'react';
-import { getFeedingUrgency, getHeartLevelStatus, getParkAlertLevel } from './helpers';
-import { AlertLevel } from './components/AlertLevel';
-import { ContainmentBadge } from './components/ContainmentBadge';
-import { DangerRating } from './components/DangerRating';
-import { DinoHeader } from './components/DinoHeader';
-import { HeartRate } from './components/HeartRate';
-import { LastFed } from './components/LastFed';
-import { ParkAlertWarning } from './components/ParkAlertWarning';
-import { Dinosaur } from './model/dinosaur';
+import {
+    getFeedingUrgency,
+    getHeartLevelStatus,
+    getParkAlertLevel,
+} from '../../helpers';
+import { AlertLevel } from '../AlertLevel';
+import { ContainmentBadge } from '../ContainmentBadge';
+import { DangerRating } from '../DangerRating';
+import { DinoHeader } from '../DinoHeader';
+import { HeartRate } from '../HeartRate';
+import { LastFed } from '../LastFed';
+import { ParkAlertWarning } from '../ParkAlertWarning';
+import { useGetDinosaur } from './hooks/useGetDinosaur';
 
 export function PaddockMonitor() {
-    const [dinosaur, setDinosaur] = useState<Dinosaur>();
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        fetch('http://localhost:3000/dinosaurs/1')
-            .then((response) => response.json())
-            .then(setDinosaur)
-            .finally(() => setIsLoading(false));
-    }, []);
+    const { dinosaur, isLoading } = useGetDinosaur();
 
     if (isLoading || !dinosaur) {
         return null;
