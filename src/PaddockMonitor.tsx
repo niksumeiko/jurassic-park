@@ -35,8 +35,6 @@ export const PaddockMonitor = () => {
     const hoursSinceFeeding =
         (Date.now() - new Date(dinosaur.lastFedAt).getTime()) / 1000 / 60 / 60;
 
-    // Domain logic: carnivores need feeding more frequently than herbivores.
-    // These thresholds are domain rules, not view concerns.
     let feedingUrgency = 'Normal';
     if (dinosaur.diet === 'carnivore') {
         if (hoursSinceFeeding > 12) {
@@ -61,8 +59,6 @@ export const PaddockMonitor = () => {
         lastFedLabel = `${Math.floor(hoursSinceFeeding / 24)} days ago`;
     }
 
-    // Domain logic: safe heart rate ranges differ by species size.
-    // Large species (T-Rex, Brachiosaurus) have lower thresholds.
     let heartRateStatus = 'Normal';
     if (
         dinosaur.species === 'tyrannosaurus' ||
@@ -99,9 +95,6 @@ export const PaddockMonitor = () => {
         statusLabel = 'Sensors Offline';
     }
 
-    // Domain logic: park alert level is derived from containment status,
-    // danger rating, and heart rate — this is a park-wide safety rule,
-    // not specific to how this view renders.
     let parkAlertLevel = 'Low';
     if (
         dinosaur.containmentStatus === 'breach' ||
