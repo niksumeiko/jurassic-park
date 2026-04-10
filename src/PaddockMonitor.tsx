@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { getContainmentDisplay } from './helpers/getContainmentDisplay';
 import { getFeedingUrgency } from './helpers/getFeedingUrgency';
-import { getLastFedLabel } from './helpers/getLastFedLabel';
 import { getHeartLevelStatus } from './helpers/getHeartLevelStatus';
+import { getLastFedLabel } from './helpers/getLastFedLabel';
+import { getParkAlertLevel } from './helpers/getParkAlertLevel';
 
 export type Dinosaur = {
     id: string;
@@ -38,43 +40,26 @@ export const PaddockMonitor = () => {
     const hoursSinceFeeding =
         (Date.now() - new Date(dinosaur.lastFedAt).getTime()) / 1000 / 60 / 60;
 
-    let statusColor = 'bg-gray-100 text-gray-800';
-    let statusLabel = 'Unknown';
-    if (dinosaur.containmentStatus === 'secured') {
-        statusColor = 'bg-green-100 text-green-800';
-        statusLabel = 'Secured';
-    } else if (dinosaur.containmentStatus === 'breach') {
-        statusColor = 'bg-red-100 text-red-800';
-        statusLabel = '⚠ BREACH';
-    } else if (dinosaur.containmentStatus === 'maintenance') {
-        statusColor = 'bg-yellow-100 text-yellow-800';
-        statusLabel = 'Under Maintenance';
-    } else if (dinosaur.containmentStatus === 'offline') {
-        statusColor = 'bg-gray-300 text-gray-600';
-        statusLabel = 'Sensors Offline';
-    }
+    const containmentDisplay = getContainmentDisplay({
+        containmentStatus: dinosaur.containmentStatus,
+    });
 
-    let parkAlertLevel = 'Low';
-    if (
-        dinosaur.containmentStatus === 'breach' ||
-        (dinosaur.dangerRating >= 4 &&
-            getHeartLevelStatus({
-                heartRate: dinosaur.heartRate,
-                species: dinosaur.species,
-            }) === 'Critical')
-    ) {
-        parkAlertLevel = 'Maximum';
-    } else if (
-        dinosaur.dangerRating >= 3 &&
-        getHeartLevelStatus({
-            heartRate: dinosaur.heartRate,
-            species: dinosaur.species,
-        }) !== 'Normal'
-    ) {
-        parkAlertLevel = 'High';
-    } else if (dinosaur.dangerRating >= 2) {
-        parkAlertLevel = 'Moderate';
-    }
+    const parkAlertLevel = getParkAlertLevel({
+        containmentStatus: dinosaur.containmentStatus,
+        dangerRating: dinosaur.dangerRating,
+        heartRate: dinosaur.heartRate,
+        species: dinosaur.species,
+    });
+
+    const heartLevelStatus = getHeartLevelStatus({
+        heartRate: dinosaur.heartRate,
+        species: dinosaur.species,
+    });
+
+    const feedingUrgency = getFeedingUrgency({
+        diet: dinosaur.diet,
+        hoursSinceFeeding,
+    });
 
     return (
         <main className="max-w-xl mx-auto p-6">
@@ -86,9 +71,9 @@ export const PaddockMonitor = () => {
 
             <div className="mb-4">
                 <span
-                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${statusColor}`}
+                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${containmentDisplay.color}`}
                 >
-                    {statusLabel}
+                    {containmentDisplay.label}
                 </span>
             </div>
 
@@ -105,25 +90,14 @@ export const PaddockMonitor = () => {
                         {dinosaur.heartRate} bpm{' '}
                         <span
                             className={
-                                getHeartLevelStatus({
-                                    heartRate: dinosaur.heartRate,
-                                    species: dinosaur.species,
-                                }) === 'Critical'
+                                heartLevelStatus === 'Critical'
                                     ? 'text-red-600 font-bold'
-                                    : getHeartLevelStatus({
-                                            heartRate: dinosaur.heartRate,
-                                            species: dinosaur.species,
-                                        }) === 'Elevated'
+                                    : heartLevelStatus === 'Elevated'
                                       ? 'text-yellow-600'
                                       : 'text-green-600'
                             }
                         >
-                            (
-                            {getHeartLevelStatus({
-                                heartRate: dinosaur.heartRate,
-                                species: dinosaur.species,
-                            })}
-                            )
+                            ({heartLevelStatus})
                         </span>
                     </dd>
                 </div>
@@ -133,24 +107,14 @@ export const PaddockMonitor = () => {
                         {getLastFedLabel({ hoursSinceFeeding })}{' '}
                         <span
                             className={
-                                getFeedingUrgency({
-                                    diet: dinosaur.diet,
-                                    hoursSinceFeeding,
-                                }) === 'Critical'
+                                feedingUrgency === 'Critical'
                                     ? 'text-red-600 font-bold'
-                                    : getFeedingUrgency({
-                                            diet: dinosaur.diet,
-                                            hoursSinceFeeding,
-                                        }) === 'Urgent'
+                                    : feedingUrgency === 'Urgent'
                                       ? 'text-yellow-600'
                                       : ''
                             }
                         >
-                            —{' '}
-                            {getFeedingUrgency({
-                                diet: dinosaur.diet,
-                                hoursSinceFeeding,
-                            })}
+                            — {feedingUrgency}
                         </span>
                     </dd>
                 </div>
