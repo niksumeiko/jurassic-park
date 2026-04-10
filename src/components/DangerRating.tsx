@@ -1,4 +1,4 @@
-import { Dinosaur } from '../PaddockMonitor';
+import { Dinosaur } from '../model/dinosaur';
 
 type Props = {
     dangerRating: Dinosaur['dangerRating'];

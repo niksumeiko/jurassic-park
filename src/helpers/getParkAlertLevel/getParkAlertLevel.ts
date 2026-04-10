@@ -1,5 +1,5 @@
-import { Dinosaur } from '../PaddockMonitor';
-import { getHeartLevelStatus } from './getHeartLevelStatus';
+import { Dinosaur } from '../../model/dinosaur';
+import { getHeartLevelStatus } from '../getHeartLevelStatus/getHeartLevelStatus';
 
 interface GetParkAlertLevelArgs {
     containmentStatus: Dinosaur['containmentStatus'];

@@ -1,6 +1,4 @@
-import { GetFeedingUrgencyReturn } from '../helpers/getFeedingUrgency';
-import { getFeedingUrgencyColor } from '../helpers/getFeedingUrgencyColor';
-import { getLastFedLabel } from '../helpers/getLastFedLabel';
+import { GetFeedingUrgencyReturn, getFeedingUrgencyColor, getLastFedLabel } from '../helpers';
 
 type Props = {
     hoursSinceFeeding: number;

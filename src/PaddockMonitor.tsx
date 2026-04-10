@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getFeedingUrgency } from './helpers/getFeedingUrgency';
-import { getHeartLevelStatus } from './helpers/getHeartLevelStatus';
-import { getParkAlertLevel } from './helpers/getParkAlertLevel';
+import { getFeedingUrgency, getHeartLevelStatus, getParkAlertLevel } from './helpers';
 import { AlertLevel } from './components/AlertLevel';
 import { ContainmentBadge } from './components/ContainmentBadge';
 import { DangerRating } from './components/DangerRating';

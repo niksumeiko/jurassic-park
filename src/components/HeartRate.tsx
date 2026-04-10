@@ -1,6 +1,8 @@
-import { Dinosaur } from '../PaddockMonitor';
-import { GetHeartLevelStatusReturn } from '../helpers/getHeartLevelStatus';
-import { getHeartLevelStatusColor } from '../helpers/getHeartLevelStatusColor';
+import {
+    GetHeartLevelStatusReturn,
+    getHeartLevelStatusColor,
+} from '../helpers';
+import { Dinosaur } from '../model/dinosaur';
 
 type Props = {
     heartRate: Dinosaur['heartRate'];
@@ -8,7 +10,9 @@ type Props = {
 };
 
 export function HeartRate({ heartRate, heartLevelStatus }: Props) {
-    const heartLevelStatusColor = getHeartLevelStatusColor({ heartLevelStatus });
+    const heartLevelStatusColor = getHeartLevelStatusColor({
+        heartLevelStatus,
+    });
 
     return (
         <div>

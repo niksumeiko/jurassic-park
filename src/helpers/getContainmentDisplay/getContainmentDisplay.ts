@@ -1,4 +1,4 @@
-import { Dinosaur } from '../PaddockMonitor';
+import { Dinosaur } from '../../model/dinosaur';
 
 enum ContainmentColor {
     Secured = 'bg-green-100 text-green-800',

@@ -1,4 +1,4 @@
-import { GetFeedingUrgencyReturn } from './getFeedingUrgency';
+import { GetFeedingUrgencyReturn } from '../getFeedingUrgency/getFeedingUrgency';
 
 enum FeedingUrgencyColor {
     Critical = 'text-red-600 font-bold',

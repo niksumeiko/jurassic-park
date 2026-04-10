@@ -1,4 +1,4 @@
-import { Dinosaur } from '../PaddockMonitor';
+import { Dinosaur } from '../../model/dinosaur';
 
 interface GetHeartLevelStatusArgs {
     species: Dinosaur['species'];

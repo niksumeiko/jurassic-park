@@ -1,4 +1,4 @@
-import { GetHeartLevelStatusReturn } from './getHeartLevelStatus';
+import { GetHeartLevelStatusReturn } from '../getHeartLevelStatus/getHeartLevelStatus';
 
 enum HeartLevelStatusColor {
     Critical = 'text-red-600 font-bold',

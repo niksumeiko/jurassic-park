@@ -1,4 +1,4 @@
-import { GetParkAlertLevelReturn } from '../helpers/getParkAlertLevel';
+import { GetParkAlertLevelReturn } from '../helpers';
 
 type Props = {
     parkAlertLevel: GetParkAlertLevelReturn;

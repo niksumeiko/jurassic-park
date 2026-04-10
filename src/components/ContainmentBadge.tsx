@@ -1,4 +1,4 @@
-import { getContainmentDisplay } from '../helpers/getContainmentDisplay';
+import { getContainmentDisplay } from '../helpers';
 import { Dinosaur } from '../PaddockMonitor';
 
 type Props = {
