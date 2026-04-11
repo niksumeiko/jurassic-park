@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react';
+import {
+    getFeedingUrgency,
+    getLastFedLabel,
+    getHeartRateStatus,
+    getContainmentDisplay,
+    getParkAlertLevel,
+    type Diet,
+    type Species,
+} from './dinosaurService';
 
 type Dinosaur = {
     id: string;
     name: string;
-    species:
-        | 'velociraptor'
-        | 'tyrannosaurus'
-        | 'triceratops'
-        | 'brachiosaurus'
-        | 'dilophosaurus';
-    diet: 'carnivore' | 'herbivore';
+    species: Species;
+    diet: Diet;
     paddock: string;
     heartRate: number;
     dangerRating: number;
@@ -35,77 +39,11 @@ export const PaddockMonitor = () => {
     const hoursSinceFeeding =
         (Date.now() - new Date(dinosaur.lastFedAt).getTime()) / 1000 / 60 / 60;
 
-    let feedingUrgency = 'Normal';
-    if (dinosaur.diet === 'carnivore') {
-        if (hoursSinceFeeding > 12) {
-            feedingUrgency = 'Critical';
-        } else if (hoursSinceFeeding > 6) {
-            feedingUrgency = 'Urgent';
-        }
-    } else {
-        if (hoursSinceFeeding > 24) {
-            feedingUrgency = 'Critical';
-        } else if (hoursSinceFeeding > 12) {
-            feedingUrgency = 'Urgent';
-        }
-    }
-
-    let lastFedLabel = '';
-    if (hoursSinceFeeding < 1) {
-        lastFedLabel = 'Less than an hour ago';
-    } else if (hoursSinceFeeding < 24) {
-        lastFedLabel = `${Math.floor(hoursSinceFeeding)} hours ago`;
-    } else {
-        lastFedLabel = `${Math.floor(hoursSinceFeeding / 24)} days ago`;
-    }
-
-    let heartRateStatus = 'Normal';
-    if (
-        dinosaur.species === 'tyrannosaurus' ||
-        dinosaur.species === 'brachiosaurus'
-    ) {
-        if (dinosaur.heartRate > 120) {
-            heartRateStatus = 'Elevated';
-        }
-        if (dinosaur.heartRate > 160) {
-            heartRateStatus = 'Critical';
-        }
-    } else {
-        if (dinosaur.heartRate > 150) {
-            heartRateStatus = 'Elevated';
-        }
-        if (dinosaur.heartRate > 200) {
-            heartRateStatus = 'Critical';
-        }
-    }
-
-    let statusColor = 'bg-gray-100 text-gray-800';
-    let statusLabel = 'Unknown';
-    if (dinosaur.containmentStatus === 'secured') {
-        statusColor = 'bg-green-100 text-green-800';
-        statusLabel = 'Secured';
-    } else if (dinosaur.containmentStatus === 'breach') {
-        statusColor = 'bg-red-100 text-red-800';
-        statusLabel = '⚠ BREACH';
-    } else if (dinosaur.containmentStatus === 'maintenance') {
-        statusColor = 'bg-yellow-100 text-yellow-800';
-        statusLabel = 'Under Maintenance';
-    } else if (dinosaur.containmentStatus === 'offline') {
-        statusColor = 'bg-gray-300 text-gray-600';
-        statusLabel = 'Sensors Offline';
-    }
-
-    let parkAlertLevel = 'Low';
-    if (
-        dinosaur.containmentStatus === 'breach' ||
-        (dinosaur.dangerRating >= 4 && heartRateStatus === 'Critical')
-    ) {
-        parkAlertLevel = 'Maximum';
-    } else if (dinosaur.dangerRating >= 3 && heartRateStatus !== 'Normal') {
-        parkAlertLevel = 'High';
-    } else if (dinosaur.dangerRating >= 2) {
-        parkAlertLevel = 'Moderate';
-    }
+    const feedingUrgency = getFeedingUrgency(dinosaur.diet, hoursSinceFeeding);
+    const lastFedLabel = getLastFedLabel(hoursSinceFeeding);
+    const heartRateStatus = getHeartRateStatus(dinosaur.species, dinosaur.heartRate);
+    const { color: statusColor, label: statusLabel } = getContainmentDisplay(dinosaur.containmentStatus);
+    const parkAlertLevel = getParkAlertLevel(dinosaur.containmentStatus, dinosaur.dangerRating, heartRateStatus);
 
     return (
         <main className="max-w-xl mx-auto p-6">
