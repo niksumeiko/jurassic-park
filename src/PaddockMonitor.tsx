@@ -4,6 +4,7 @@ import {
     determineFeedingUrgency,
     determineLastFedLabel,
     determineHeartRateStatus,
+    determineContainmentStatusDisplay,
 } from './utils/dinosaur-calculations';
 
 export const PaddockMonitor = () => {
@@ -36,21 +37,8 @@ export const PaddockMonitor = () => {
         heartRate: dinosaur.heartRate,
     });
 
-    let statusColor = 'bg-gray-100 text-gray-800';
-    let statusLabel = 'Unknown';
-    if (dinosaur.containmentStatus === 'secured') {
-        statusColor = 'bg-green-100 text-green-800';
-        statusLabel = 'Secured';
-    } else if (dinosaur.containmentStatus === 'breach') {
-        statusColor = 'bg-red-100 text-red-800';
-        statusLabel = '⚠ BREACH';
-    } else if (dinosaur.containmentStatus === 'maintenance') {
-        statusColor = 'bg-yellow-100 text-yellow-800';
-        statusLabel = 'Under Maintenance';
-    } else if (dinosaur.containmentStatus === 'offline') {
-        statusColor = 'bg-gray-300 text-gray-600';
-        statusLabel = 'Sensors Offline';
-    }
+    const { color: statusColor, label: statusLabel } =
+        determineContainmentStatusDisplay(dinosaur.containmentStatus);
 
     let parkAlertLevel = 'Low';
     if (

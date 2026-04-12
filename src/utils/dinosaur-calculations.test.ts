@@ -3,6 +3,7 @@ import {
     determineFeedingUrgency,
     determineLastFedLabel,
     determineHeartRateStatus,
+    determineContainmentStatusDisplay,
 } from './dinosaur-calculations';
 
 describe('determineFeedingUrgency', () => {
@@ -148,6 +149,36 @@ describe('determineHeartRateStatus', () => {
                     heartRate: 140,
                 }),
             ).toBe('Normal');
+        });
+    });
+});
+
+describe('determineContainmentStatusDisplay', () => {
+    it('should return secured display', () => {
+        expect(determineContainmentStatusDisplay('secured')).toEqual({
+            color: 'bg-green-100 text-green-800',
+            label: 'Secured',
+        });
+    });
+
+    it('should return breach display', () => {
+        expect(determineContainmentStatusDisplay('breach')).toEqual({
+            color: 'bg-red-100 text-red-800',
+            label: '⚠ BREACH',
+        });
+    });
+
+    it('should return maintenance display', () => {
+        expect(determineContainmentStatusDisplay('maintenance')).toEqual({
+            color: 'bg-yellow-100 text-yellow-800',
+            label: 'Under Maintenance',
+        });
+    });
+
+    it('should return offline display', () => {
+        expect(determineContainmentStatusDisplay('offline')).toEqual({
+            color: 'bg-gray-300 text-gray-600',
+            label: 'Sensors Offline',
         });
     });
 });
