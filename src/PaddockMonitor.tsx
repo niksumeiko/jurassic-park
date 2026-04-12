@@ -1,52 +1,27 @@
-import { useEffect, useState } from 'react';
-import { Dinosaur } from './domain/dinosaur/dinosaurService';
-import { useDinosaur } from './domain/dinosaur/DinosaurProvider';
-import { getDinosaurStatus } from './application/getDinosaurStatus';
+import { DinosaurViewModel } from './application/getDinosaurStatus';
 
-export const PaddockMonitor = () => {
-    const [dinosaur, setDinosaur] = useState<Dinosaur>();
-    const [isLoading, setIsLoading] = useState(true);
-    const { fetchDinosaur } = useDinosaur();
-    useEffect(() => {
-        void fetchDinosaur()
-            .then(setDinosaur)
-            .finally(() => setIsLoading(false));
-    }, []);
-
-    if (isLoading || !dinosaur) {
-        return null;
-    }
-
-    const {
-        parkAlertLevel,
-        statusColor,
-        statusLabel,
-        feedingUrgency,
-        heartRateStatus,
-        lastFedLabel,
-        name,
-        species,
-        diet,
-        paddock,
-        dangerRating,
-    } = getDinosaurStatus(dinosaur, Date.now());
-
+export const PaddockMonitor = ({
+    dinosaur,
+}: {
+    dinosaur: DinosaurViewModel;
+}) => {
     return (
         <main className="max-w-xl mx-auto p-6">
-            <h1 className="text-2xl font-bold mb-1">{name}</h1>
+            <h1 className="text-2xl font-bold mb-1">{dinosaur.name}</h1>
             <p className="text-gray-500 mb-4 capitalize">
-                {species} · {diet} · Paddock {paddock}
+                {dinosaur.species} · {dinosaur.diet} · Paddock{' '}
+                {dinosaur.paddock}
             </p>
 
             <div className="mb-4">
                 <span
-                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${statusColor}`}
+                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${dinosaur.statusColor}`}
                 >
-                    {statusLabel}
+                    {dinosaur.statusLabel}
                 </span>
             </div>
 
-            {parkAlertLevel === 'Maximum' && (
+            {dinosaur.parkAlertLevel === 'Maximum' && (
                 <div className="bg-red-600 text-white p-3 rounded mb-4 font-bold">
                     🚨 ALERT LEVEL: MAXIMUM — Evacuate nearby sectors
                 </div>
@@ -59,41 +34,41 @@ export const PaddockMonitor = () => {
                         {dinosaur.heartRate} bpm{' '}
                         <span
                             className={
-                                heartRateStatus === 'Critical'
+                                dinosaur.heartRateStatus === 'Critical'
                                     ? 'text-red-600 font-bold'
-                                    : heartRateStatus === 'Elevated'
+                                    : dinosaur.heartRateStatus === 'Elevated'
                                       ? 'text-yellow-600'
                                       : 'text-green-600'
                             }
                         >
-                            ({heartRateStatus})
+                            ({dinosaur.heartRateStatus})
                         </span>
                     </dd>
                 </div>
                 <div>
                     <dt className="text-sm text-gray-500">Last Fed</dt>
                     <dd>
-                        {lastFedLabel}{' '}
+                        {dinosaur.lastFedLabel}{' '}
                         <span
                             className={
-                                feedingUrgency === 'Critical'
+                                dinosaur.feedingUrgency === 'Critical'
                                     ? 'text-red-600 font-bold'
-                                    : feedingUrgency === 'Urgent'
+                                    : dinosaur.feedingUrgency === 'Urgent'
                                       ? 'text-yellow-600'
                                       : ''
                             }
                         >
-                            — {feedingUrgency}
+                            — {dinosaur.feedingUrgency}
                         </span>
                     </dd>
                 </div>
                 <div>
                     <dt className="text-sm text-gray-500">Danger Rating</dt>
-                    <dd>{dangerRating} / 5</dd>
+                    <dd>{dinosaur.dangerRating} / 5</dd>
                 </div>
                 <div>
                     <dt className="text-sm text-gray-500">Alert Level</dt>
-                    <dd>{parkAlertLevel}</dd>
+                    <dd>{dinosaur.parkAlertLevel}</dd>
                 </div>
             </dl>
         </main>
