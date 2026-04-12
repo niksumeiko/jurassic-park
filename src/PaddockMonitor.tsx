@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { Dinosaur } from './types/dinosaur';
-import { determineFeedingUrgency } from './utils/dinosaur-calculations';
+import {
+    determineFeedingUrgency,
+    determineLastFedLabel,
+} from './utils/dinosaur-calculations';
 
 export const PaddockMonitor = () => {
     const [dinosaur, setDinosaur] = useState<Dinosaur>();
@@ -25,14 +28,7 @@ export const PaddockMonitor = () => {
         hoursSinceFeeding,
     });
 
-    let lastFedLabel = '';
-    if (hoursSinceFeeding < 1) {
-        lastFedLabel = 'Less than an hour ago';
-    } else if (hoursSinceFeeding < 24) {
-        lastFedLabel = `${Math.floor(hoursSinceFeeding)} hours ago`;
-    } else {
-        lastFedLabel = `${Math.floor(hoursSinceFeeding / 24)} days ago`;
-    }
+    const lastFedLabel = determineLastFedLabel(hoursSinceFeeding);
 
     let heartRateStatus = 'Normal';
     if (

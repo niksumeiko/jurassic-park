@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { determineFeedingUrgency } from './dinosaur-calculations';
+import {
+    determineFeedingUrgency,
+    determineLastFedLabel,
+} from './dinosaur-calculations';
 
 describe('determineFeedingUrgency', () => {
     describe('carnivore diet', () => {
@@ -70,5 +73,20 @@ describe('determineFeedingUrgency', () => {
                 }),
             ).toBe('Normal');
         });
+    });
+});
+
+describe('determineLastFedLabel', () => {
+    it('should return "Less than an hour ago" for < 1 hour', () => {
+        expect(determineLastFedLabel(0.5)).toBe('Less than an hour ago');
+    });
+
+    it('should return hours for < 24 hours', () => {
+        expect(determineLastFedLabel(8)).toBe('8 hours ago');
+        expect(determineLastFedLabel(23)).toBe('23 hours ago');
+    });
+
+    it('should return days for >= 24 hours', () => {
+        expect(determineLastFedLabel(48)).toBe('2 days ago');
     });
 });
