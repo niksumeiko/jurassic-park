@@ -1,21 +1,6 @@
 import { useEffect, useState } from 'react';
-
-type Dinosaur = {
-    id: string;
-    name: string;
-    species:
-        | 'velociraptor'
-        | 'tyrannosaurus'
-        | 'triceratops'
-        | 'brachiosaurus'
-        | 'dilophosaurus';
-    diet: 'carnivore' | 'herbivore';
-    paddock: string;
-    heartRate: number;
-    dangerRating: number;
-    containmentStatus: 'secured' | 'breach' | 'maintenance' | 'offline';
-    lastFedAt: string;
-};
+import type { Dinosaur } from './types/dinosaur';
+import { determineFeedingUrgency } from './utils/dinosaur-calculations';
 
 export const PaddockMonitor = () => {
     const [dinosaur, setDinosaur] = useState<Dinosaur>();
@@ -35,20 +20,10 @@ export const PaddockMonitor = () => {
     const hoursSinceFeeding =
         (Date.now() - new Date(dinosaur.lastFedAt).getTime()) / 1000 / 60 / 60;
 
-    let feedingUrgency = 'Normal';
-    if (dinosaur.diet === 'carnivore') {
-        if (hoursSinceFeeding > 12) {
-            feedingUrgency = 'Critical';
-        } else if (hoursSinceFeeding > 6) {
-            feedingUrgency = 'Urgent';
-        }
-    } else {
-        if (hoursSinceFeeding > 24) {
-            feedingUrgency = 'Critical';
-        } else if (hoursSinceFeeding > 12) {
-            feedingUrgency = 'Urgent';
-        }
-    }
+    const feedingUrgency = determineFeedingUrgency({
+        diet: dinosaur.diet,
+        hoursSinceFeeding,
+    });
 
     let lastFedLabel = '';
     if (hoursSinceFeeding < 1) {
