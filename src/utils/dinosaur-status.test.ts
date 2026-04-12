@@ -5,7 +5,7 @@ import {
     determineHeartRateStatus,
     determineContainmentStatusDisplay,
     determineParkAlertLevel,
-} from './dinosaur-calculations';
+} from './dinosaur-status';
 
 describe('determineFeedingUrgency', () => {
     describe('carnivore diet', () => {

@@ -4,7 +4,7 @@ import {
     determineHeartRateStatus,
     determineContainmentStatusDisplay,
     determineParkAlertLevel,
-} from './utils/dinosaur-calculations';
+} from './utils/dinosaur-status';
 import { useDinosaur } from './hooks/useDinosaur';
 
 export const PaddockMonitor = () => {
