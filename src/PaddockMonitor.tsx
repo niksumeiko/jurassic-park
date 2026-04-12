@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-import type { Dinosaur } from './types/dinosaur';
 import {
     determineFeedingUrgency,
     determineLastFedLabel,
@@ -7,17 +5,10 @@ import {
     determineContainmentStatusDisplay,
     determineParkAlertLevel,
 } from './utils/dinosaur-calculations';
+import { useDinosaur } from './hooks/useDinosaur';
 
 export const PaddockMonitor = () => {
-    const [dinosaur, setDinosaur] = useState<Dinosaur>();
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        fetch('http://localhost:3000/dinosaurs/1')
-            .then((response) => response.json())
-            .then(setDinosaur)
-            .finally(() => setIsLoading(false));
-    }, []);
+    const { dinosaur, isLoading } = useDinosaur('1');
 
     if (isLoading || !dinosaur) {
         return null;
