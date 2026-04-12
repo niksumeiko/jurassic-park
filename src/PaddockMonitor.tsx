@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react';
-import {
-    getFeedingUrgency,
-    getLastFedLabel,
-    getHeartRateStatus,
-    getContainmentDisplay,
-    getParkAlertLevel,
-    Dinosaur,
-} from './domain/dinosaur/dinosaurService';
+import { Dinosaur } from './domain/dinosaur/dinosaurService';
 import { useDinosaur } from './domain/dinosaur/DinosaurProvider';
+import { getDinosaurStatus } from './application/getDinosaurStatus';
 
 export const PaddockMonitor = () => {
     const [dinosaur, setDinosaur] = useState<Dinosaur>();
@@ -23,30 +17,25 @@ export const PaddockMonitor = () => {
         return null;
     }
 
-    const hoursSinceFeeding =
-        (Date.now() - new Date(dinosaur.lastFedAt).getTime()) / 1000 / 60 / 60;
-
-    const feedingUrgency = getFeedingUrgency(dinosaur.diet, hoursSinceFeeding);
-    const lastFedLabel = getLastFedLabel(hoursSinceFeeding);
-    const heartRateStatus = getHeartRateStatus(
-        dinosaur.species,
-        dinosaur.heartRate,
-    );
-    const { color: statusColor, label: statusLabel } = getContainmentDisplay(
-        dinosaur.containmentStatus,
-    );
-    const parkAlertLevel = getParkAlertLevel(
-        dinosaur.containmentStatus,
-        dinosaur.dangerRating,
+    const {
+        parkAlertLevel,
+        statusColor,
+        statusLabel,
+        feedingUrgency,
         heartRateStatus,
-    );
+        lastFedLabel,
+        name,
+        species,
+        diet,
+        paddock,
+        dangerRating,
+    } = getDinosaurStatus(dinosaur, Date.now());
 
     return (
         <main className="max-w-xl mx-auto p-6">
-            <h1 className="text-2xl font-bold mb-1">{dinosaur.name}</h1>
+            <h1 className="text-2xl font-bold mb-1">{name}</h1>
             <p className="text-gray-500 mb-4 capitalize">
-                {dinosaur.species} · {dinosaur.diet} · Paddock{' '}
-                {dinosaur.paddock}
+                {species} · {diet} · Paddock {paddock}
             </p>
 
             <div className="mb-4">
@@ -100,7 +89,7 @@ export const PaddockMonitor = () => {
                 </div>
                 <div>
                     <dt className="text-sm text-gray-500">Danger Rating</dt>
-                    <dd>{dinosaur.dangerRating} / 5</dd>
+                    <dd>{dangerRating} / 5</dd>
                 </div>
                 <div>
                     <dt className="text-sm text-gray-500">Alert Level</dt>

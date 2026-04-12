@@ -38,7 +38,10 @@ export function getFeedingUrgency(
 type ContainmentStatus = 'secured' | 'breach' | 'maintenance' | 'offline';
 type ContainmentDisplay = { color: string; label: string };
 
-const CONTAINMENT_DISPLAY: Record<ContainmentStatus, ContainmentDisplay> = {
+export const CONTAINMENT_DISPLAY: Record<
+    ContainmentStatus,
+    ContainmentDisplay
+> = {
     secured: { color: 'bg-green-100 text-green-800', label: 'Secured' },
     breach: { color: 'bg-red-100 text-red-800', label: '⚠ BREACH' },
     maintenance: {
