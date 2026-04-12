@@ -5,29 +5,16 @@ import {
     getHeartRateStatus,
     getContainmentDisplay,
     getParkAlertLevel,
-    type Diet,
-    type Species,
-} from './dinosaurService';
-
-type Dinosaur = {
-    id: string;
-    name: string;
-    species: Species;
-    diet: Diet;
-    paddock: string;
-    heartRate: number;
-    dangerRating: number;
-    containmentStatus: 'secured' | 'breach' | 'maintenance' | 'offline';
-    lastFedAt: string;
-};
+    Dinosaur,
+} from './domain/dinosaur/dinosaurService';
+import { useDinosaur } from './domain/dinosaur/DinosaurProvider';
 
 export const PaddockMonitor = () => {
     const [dinosaur, setDinosaur] = useState<Dinosaur>();
     const [isLoading, setIsLoading] = useState(true);
-
+    const { fetchDinosaur } = useDinosaur();
     useEffect(() => {
-        fetch('http://localhost:3000/dinosaurs/1')
-            .then((response) => response.json())
+        void fetchDinosaur()
             .then(setDinosaur)
             .finally(() => setIsLoading(false));
     }, []);
@@ -41,9 +28,18 @@ export const PaddockMonitor = () => {
 
     const feedingUrgency = getFeedingUrgency(dinosaur.diet, hoursSinceFeeding);
     const lastFedLabel = getLastFedLabel(hoursSinceFeeding);
-    const heartRateStatus = getHeartRateStatus(dinosaur.species, dinosaur.heartRate);
-    const { color: statusColor, label: statusLabel } = getContainmentDisplay(dinosaur.containmentStatus);
-    const parkAlertLevel = getParkAlertLevel(dinosaur.containmentStatus, dinosaur.dangerRating, heartRateStatus);
+    const heartRateStatus = getHeartRateStatus(
+        dinosaur.species,
+        dinosaur.heartRate,
+    );
+    const { color: statusColor, label: statusLabel } = getContainmentDisplay(
+        dinosaur.containmentStatus,
+    );
+    const parkAlertLevel = getParkAlertLevel(
+        dinosaur.containmentStatus,
+        dinosaur.dangerRating,
+        heartRateStatus,
+    );
 
     return (
         <main className="max-w-xl mx-auto p-6">

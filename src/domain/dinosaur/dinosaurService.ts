@@ -1,3 +1,14 @@
+export type Dinosaur = {
+    id: string;
+    name: string;
+    species: Species;
+    diet: Diet;
+    paddock: string;
+    heartRate: number;
+    dangerRating: number;
+    containmentStatus: 'secured' | 'breach' | 'maintenance' | 'offline';
+    lastFedAt: string;
+};
 export type Diet = 'carnivore' | 'herbivore';
 export type Species =
     | 'velociraptor'
@@ -10,7 +21,10 @@ type HeartRateStatus = 'Normal' | 'Elevated' | 'Critical';
 const LARGE_SPECIES: Species[] = ['tyrannosaurus', 'brachiosaurus'];
 type FeedingUrgency = 'Normal' | 'Urgent' | 'Critical';
 
-export function getFeedingUrgency(diet: Diet, hoursSinceFeeding: number): FeedingUrgency {
+export function getFeedingUrgency(
+    diet: Diet,
+    hoursSinceFeeding: number,
+): FeedingUrgency {
     if (diet === 'carnivore') {
         if (hoursSinceFeeding > 12) return 'Critical';
         if (hoursSinceFeeding > 6) return 'Urgent';
@@ -27,15 +41,23 @@ type ContainmentDisplay = { color: string; label: string };
 const CONTAINMENT_DISPLAY: Record<ContainmentStatus, ContainmentDisplay> = {
     secured: { color: 'bg-green-100 text-green-800', label: 'Secured' },
     breach: { color: 'bg-red-100 text-red-800', label: '⚠ BREACH' },
-    maintenance: { color: 'bg-yellow-100 text-yellow-800', label: 'Under Maintenance' },
+    maintenance: {
+        color: 'bg-yellow-100 text-yellow-800',
+        label: 'Under Maintenance',
+    },
     offline: { color: 'bg-gray-300 text-gray-600', label: 'Sensors Offline' },
 };
 
-export function getContainmentDisplay(status: ContainmentStatus): ContainmentDisplay {
+export function getContainmentDisplay(
+    status: ContainmentStatus,
+): ContainmentDisplay {
     return CONTAINMENT_DISPLAY[status];
 }
 
-export function getHeartRateStatus(species: Species, heartRate: number): HeartRateStatus {
+export function getHeartRateStatus(
+    species: Species,
+    heartRate: number,
+): HeartRateStatus {
     if (LARGE_SPECIES.includes(species)) {
         if (heartRate > 160) return 'Critical';
         if (heartRate > 120) return 'Elevated';
@@ -53,7 +75,10 @@ export function getParkAlertLevel(
     dangerRating: number,
     heartRateStatus: HeartRateStatus,
 ): AlertLevel {
-    if (containmentStatus === 'breach' || (dangerRating >= 4 && heartRateStatus === 'Critical')) {
+    if (
+        containmentStatus === 'breach' ||
+        (dangerRating >= 4 && heartRateStatus === 'Critical')
+    ) {
         return 'Maximum';
     }
     if (dangerRating >= 3 && heartRateStatus !== 'Normal') return 'High';
@@ -63,6 +88,7 @@ export function getParkAlertLevel(
 
 export function getLastFedLabel(hoursSinceFeeding: number): string {
     if (hoursSinceFeeding < 1) return 'Less than an hour ago';
-    if (hoursSinceFeeding < 24) return `${Math.floor(hoursSinceFeeding)} hours ago`;
+    if (hoursSinceFeeding < 24)
+        return `${Math.floor(hoursSinceFeeding)} hours ago`;
     return `${Math.floor(hoursSinceFeeding / 24)} days ago`;
 }
