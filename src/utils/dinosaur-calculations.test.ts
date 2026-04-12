@@ -4,6 +4,7 @@ import {
     determineLastFedLabel,
     determineHeartRateStatus,
     determineContainmentStatusDisplay,
+    determineParkAlertLevel,
 } from './dinosaur-calculations';
 
 describe('determineFeedingUrgency', () => {
@@ -180,5 +181,57 @@ describe('determineContainmentStatusDisplay', () => {
             color: 'bg-gray-300 text-gray-600',
             label: 'Sensors Offline',
         });
+    });
+});
+
+describe('determineParkAlertLevel', () => {
+    it('should return Maximum for containment breach', () => {
+        expect(
+            determineParkAlertLevel({
+                containmentStatus: 'breach',
+                dangerRating: 1,
+                heartRateStatus: 'Normal',
+            }),
+        ).toBe('Maximum');
+    });
+
+    it('should return Maximum for high danger (>= 4) with critical heart rate', () => {
+        expect(
+            determineParkAlertLevel({
+                containmentStatus: 'secured',
+                dangerRating: 5,
+                heartRateStatus: 'Critical',
+            }),
+        ).toBe('Maximum');
+    });
+
+    it('should return High for moderate danger (>= 3) with non-normal heart rate', () => {
+        expect(
+            determineParkAlertLevel({
+                containmentStatus: 'maintenance',
+                dangerRating: 3,
+                heartRateStatus: 'Critical',
+            }),
+        ).toBe('High');
+    });
+
+    it('should return Moderate for danger >= 2', () => {
+        expect(
+            determineParkAlertLevel({
+                containmentStatus: 'offline',
+                dangerRating: 2,
+                heartRateStatus: 'Elevated',
+            }),
+        ).toBe('Moderate');
+    });
+
+    it('should return Low for low danger with normal vitals', () => {
+        expect(
+            determineParkAlertLevel({
+                containmentStatus: 'secured',
+                dangerRating: 1,
+                heartRateStatus: 'Normal',
+            }),
+        ).toBe('Low');
     });
 });

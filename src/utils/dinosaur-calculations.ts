@@ -4,6 +4,7 @@ type Diet = 'carnivore' | 'herbivore';
 type FeedingUrgency = 'Critical' | 'Urgent' | 'Normal';
 type HeartRateStatus = 'Critical' | 'Elevated' | 'Normal';
 type ContainmentStatus = Dinosaur['containmentStatus'];
+type ParkAlertLevel = 'Maximum' | 'High' | 'Moderate' | 'Low';
 
 export function determineFeedingUrgency({
     diet,
@@ -80,4 +81,32 @@ export function determineContainmentStatusDisplay(
         };
 
     return displays[status];
+}
+
+export function determineParkAlertLevel({
+    containmentStatus,
+    dangerRating,
+    heartRateStatus,
+}: {
+    containmentStatus: ContainmentStatus;
+    dangerRating: number;
+    heartRateStatus: HeartRateStatus;
+}): ParkAlertLevel {
+    if (containmentStatus === 'breach') {
+        return 'Maximum';
+    }
+
+    if (dangerRating >= 4 && heartRateStatus === 'Critical') {
+        return 'Maximum';
+    }
+
+    if (dangerRating >= 3 && heartRateStatus !== 'Normal') {
+        return 'High';
+    }
+
+    if (dangerRating >= 2) {
+        return 'Moderate';
+    }
+
+    return 'Low';
 }

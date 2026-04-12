@@ -5,6 +5,7 @@ import {
     determineLastFedLabel,
     determineHeartRateStatus,
     determineContainmentStatusDisplay,
+    determineParkAlertLevel,
 } from './utils/dinosaur-calculations';
 
 export const PaddockMonitor = () => {
@@ -40,17 +41,11 @@ export const PaddockMonitor = () => {
     const { color: statusColor, label: statusLabel } =
         determineContainmentStatusDisplay(dinosaur.containmentStatus);
 
-    let parkAlertLevel = 'Low';
-    if (
-        dinosaur.containmentStatus === 'breach' ||
-        (dinosaur.dangerRating >= 4 && heartRateStatus === 'Critical')
-    ) {
-        parkAlertLevel = 'Maximum';
-    } else if (dinosaur.dangerRating >= 3 && heartRateStatus !== 'Normal') {
-        parkAlertLevel = 'High';
-    } else if (dinosaur.dangerRating >= 2) {
-        parkAlertLevel = 'Moderate';
-    }
+    const parkAlertLevel = determineParkAlertLevel({
+        containmentStatus: dinosaur.containmentStatus,
+        dangerRating: dinosaur.dangerRating,
+        heartRateStatus,
+    });
 
     return (
         <main className="max-w-xl mx-auto p-6">
