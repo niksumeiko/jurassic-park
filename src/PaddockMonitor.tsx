@@ -10,8 +10,24 @@ import { useDinosaur } from './hooks/useDinosaur';
 export const PaddockMonitor = () => {
     const { dinosaur, isLoading } = useDinosaur('1');
 
-    if (isLoading || !dinosaur) {
-        return null;
+    if (isLoading) {
+        return (
+            <main className="max-w-xl mx-auto p-6">
+                <div role="status" aria-live="polite">
+                    <p>Loading dinosaur data...</p>
+                </div>
+            </main>
+        );
+    }
+
+    if (!dinosaur) {
+        return (
+            <main className="max-w-xl mx-auto p-6">
+                <div role="alert">
+                    <p>Failed to load dinosaur data.</p>
+                </div>
+            </main>
+        );
     }
 
     const hoursSinceFeeding =
@@ -49,14 +65,21 @@ export const PaddockMonitor = () => {
             <div className="mb-4">
                 <span
                     className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${statusColor}`}
+                    role="status"
+                    aria-label={`Containment status: ${statusLabel}`}
                 >
                     {statusLabel}
                 </span>
             </div>
 
             {parkAlertLevel === 'Maximum' && (
-                <div className="bg-red-600 text-white p-3 rounded mb-4 font-bold">
-                    🚨 ALERT LEVEL: MAXIMUM — Evacuate nearby sectors
+                <div
+                    className="bg-red-600 text-white p-3 rounded mb-4 font-bold"
+                    role="alert"
+                    aria-live="assertive"
+                >
+                    <span aria-label="Warning">🚨</span> ALERT LEVEL: MAXIMUM —
+                    Evacuate nearby sectors
                 </div>
             )}
 
@@ -73,6 +96,7 @@ export const PaddockMonitor = () => {
                                       ? 'text-yellow-600'
                                       : 'text-green-600'
                             }
+                            aria-label={`Heart rate status: ${heartRateStatus}`}
                         >
                             ({heartRateStatus})
                         </span>
@@ -90,6 +114,7 @@ export const PaddockMonitor = () => {
                                       ? 'text-yellow-600'
                                       : ''
                             }
+                            aria-label={`Feeding urgency: ${feedingUrgency}`}
                         >
                             — {feedingUrgency}
                         </span>
