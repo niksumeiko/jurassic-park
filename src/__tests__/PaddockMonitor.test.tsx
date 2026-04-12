@@ -1,31 +1,26 @@
-import { expect, test } from '@playwright/experimental-ct-react';
-import { App } from '../App';
-
-function hoursAgo(hours: number): string {
-    return new Date(Date.now() - hours * 60 * 60 * 1000).toISOString();
-}
+import { test, expect } from './fixtures';
+import { createTestDinosaur, hoursAgo } from './test-factories';
+import { PaddockMonitor } from '../PaddockMonitor';
 
 test('secured large carnivore with normal vitals shows low alert', async ({
     mount,
-    page,
+    mockApi,
 }) => {
-    await page.route('**/dinosaurs/1', (route) =>
-        route.fulfill({
-            json: {
-                id: '1',
-                name: 'Rexy',
-                species: 'tyrannosaurus',
-                diet: 'carnivore',
-                paddock: 'A-1',
-                heartRate: 100,
-                dangerRating: 1,
-                containmentStatus: 'secured',
-                lastFedAt: hoursAgo(0.5),
-            },
+    await mockApi.dinosaur(
+        '1',
+        createTestDinosaur({
+            name: 'Rexy',
+            species: 'tyrannosaurus',
+            diet: 'carnivore',
+            paddock: 'A-1',
+            heartRate: 100,
+            dangerRating: 1,
+            containmentStatus: 'secured',
+            lastFedAt: hoursAgo(0.5),
         }),
     );
 
-    const component = await mount(<App />);
+    const component = await mount(<PaddockMonitor />);
 
     await expect(component.getByText('Rexy')).toBeVisible();
     await expect(
@@ -47,25 +42,23 @@ test('secured large carnivore with normal vitals shows low alert', async ({
 
 test('breach with elevated heart rate triggers maximum alert', async ({
     mount,
-    page,
+    mockApi,
 }) => {
-    await page.route('**/dinosaurs/1', (route) =>
-        route.fulfill({
-            json: {
-                id: '1',
-                name: 'Blue',
-                species: 'velociraptor',
-                diet: 'carnivore',
-                paddock: 'B-12',
-                heartRate: 155,
-                dangerRating: 4,
-                containmentStatus: 'breach',
-                lastFedAt: hoursAgo(8),
-            },
+    await mockApi.dinosaur(
+        '1',
+        createTestDinosaur({
+            name: 'Blue',
+            species: 'velociraptor',
+            diet: 'carnivore',
+            paddock: 'B-12',
+            heartRate: 155,
+            dangerRating: 4,
+            containmentStatus: 'breach',
+            lastFedAt: hoursAgo(8),
         }),
     );
 
-    const component = await mount(<App />);
+    const component = await mount(<PaddockMonitor />);
 
     await expect(component.getByText('Blue')).toBeVisible();
     await expect(
@@ -87,25 +80,23 @@ test('breach with elevated heart rate triggers maximum alert', async ({
 
 test('maintenance with critical vitals shows high alert', async ({
     mount,
-    page,
+    mockApi,
 }) => {
-    await page.route('**/dinosaurs/1', (route) =>
-        route.fulfill({
-            json: {
-                id: '1',
-                name: 'Thunderfoot',
-                species: 'brachiosaurus',
-                diet: 'carnivore',
-                paddock: 'C-3',
-                heartRate: 170,
-                dangerRating: 3,
-                containmentStatus: 'maintenance',
-                lastFedAt: hoursAgo(15),
-            },
+    await mockApi.dinosaur(
+        '1',
+        createTestDinosaur({
+            name: 'Thunderfoot',
+            species: 'brachiosaurus',
+            diet: 'carnivore',
+            paddock: 'C-3',
+            heartRate: 170,
+            dangerRating: 3,
+            containmentStatus: 'maintenance',
+            lastFedAt: hoursAgo(15),
         }),
     );
 
-    const component = await mount(<App />);
+    const component = await mount(<PaddockMonitor />);
 
     await expect(component.getByText('Thunderfoot')).toBeVisible();
     await expect(component.getByText('Under Maintenance')).toBeVisible();
@@ -122,25 +113,23 @@ test('maintenance with critical vitals shows high alert', async ({
 
 test('offline herbivore with elevated heart rate shows moderate alert', async ({
     mount,
-    page,
+    mockApi,
 }) => {
-    await page.route('**/dinosaurs/1', (route) =>
-        route.fulfill({
-            json: {
-                id: '1',
-                name: 'Cera',
-                species: 'brachiosaurus',
-                diet: 'herbivore',
-                paddock: 'D-7',
-                heartRate: 130,
-                dangerRating: 2,
-                containmentStatus: 'offline',
-                lastFedAt: hoursAgo(18),
-            },
+    await mockApi.dinosaur(
+        '1',
+        createTestDinosaur({
+            name: 'Cera',
+            species: 'brachiosaurus',
+            diet: 'herbivore',
+            paddock: 'D-7',
+            heartRate: 130,
+            dangerRating: 2,
+            containmentStatus: 'offline',
+            lastFedAt: hoursAgo(18),
         }),
     );
 
-    const component = await mount(<App />);
+    const component = await mount(<PaddockMonitor />);
 
     await expect(component.getByText('Cera')).toBeVisible();
     await expect(component.getByText('Sensors Offline')).toBeVisible();
@@ -157,25 +146,23 @@ test('offline herbivore with elevated heart rate shows moderate alert', async ({
 
 test('critical heart rate and high danger trigger maximum alert without breach', async ({
     mount,
-    page,
+    mockApi,
 }) => {
-    await page.route('**/dinosaurs/1', (route) =>
-        route.fulfill({
-            json: {
-                id: '1',
-                name: 'Spitter',
-                species: 'dilophosaurus',
-                diet: 'herbivore',
-                paddock: 'E-2',
-                heartRate: 210,
-                dangerRating: 5,
-                containmentStatus: 'secured',
-                lastFedAt: hoursAgo(48),
-            },
+    await mockApi.dinosaur(
+        '1',
+        createTestDinosaur({
+            name: 'Spitter',
+            species: 'dilophosaurus',
+            diet: 'herbivore',
+            paddock: 'E-2',
+            heartRate: 210,
+            dangerRating: 5,
+            containmentStatus: 'secured',
+            lastFedAt: hoursAgo(48),
         }),
     );
 
-    const component = await mount(<App />);
+    const component = await mount(<PaddockMonitor />);
 
     await expect(component.getByText('Spitter')).toBeVisible();
     await expect(component.getByText('Secured')).toBeVisible();
@@ -189,5 +176,26 @@ test('critical heart rate and high danger trigger maximum alert without breach',
     ).toBeVisible();
     await expect(
         component.getByText(/ALERT LEVEL: MAXIMUM — Evacuate nearby sectors/),
+    ).toBeVisible();
+});
+
+test('shows loading state while fetching data', async ({ mount, page }) => {
+    const component = await mount(<PaddockMonitor />);
+
+    await expect(
+        component.getByText('Loading dinosaur data...'),
+    ).toBeVisible();
+});
+
+test('shows error state when data fails to load', async ({
+    mount,
+    mockApi,
+}) => {
+    await mockApi.dinosaurError('1', 500);
+
+    const component = await mount(<PaddockMonitor />);
+
+    await expect(
+        component.getByText('Failed to load dinosaur data.'),
     ).toBeVisible();
 });

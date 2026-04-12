@@ -1,111 +1,58 @@
-import { useEffect, useState } from 'react';
-
-type Dinosaur = {
-    id: string;
-    name: string;
-    species:
-        | 'velociraptor'
-        | 'tyrannosaurus'
-        | 'triceratops'
-        | 'brachiosaurus'
-        | 'dilophosaurus';
-    diet: 'carnivore' | 'herbivore';
-    paddock: string;
-    heartRate: number;
-    dangerRating: number;
-    containmentStatus: 'secured' | 'breach' | 'maintenance' | 'offline';
-    lastFedAt: string;
-};
+import {
+    determineFeedingUrgency,
+    determineLastFedLabel,
+    determineHeartRateStatus,
+    determineContainmentStatusDisplay,
+    determineParkAlertLevel,
+} from './utils/dinosaur-status';
+import { useDinosaur } from './hooks/useDinosaur';
 
 export const PaddockMonitor = () => {
-    const [dinosaur, setDinosaur] = useState<Dinosaur>();
-    const [isLoading, setIsLoading] = useState(true);
+    const { dinosaur, isLoading } = useDinosaur('1');
 
-    useEffect(() => {
-        fetch('http://localhost:3000/dinosaurs/1')
-            .then((response) => response.json())
-            .then(setDinosaur)
-            .finally(() => setIsLoading(false));
-    }, []);
+    if (isLoading) {
+        return (
+            <main className="max-w-xl mx-auto p-6">
+                <div role="status" aria-live="polite">
+                    <p>Loading dinosaur data...</p>
+                </div>
+            </main>
+        );
+    }
 
-    if (isLoading || !dinosaur) {
-        return null;
+    if (!dinosaur) {
+        return (
+            <main className="max-w-xl mx-auto p-6">
+                <div role="alert">
+                    <p>Failed to load dinosaur data.</p>
+                </div>
+            </main>
+        );
     }
 
     const hoursSinceFeeding =
         (Date.now() - new Date(dinosaur.lastFedAt).getTime()) / 1000 / 60 / 60;
 
-    let feedingUrgency = 'Normal';
-    if (dinosaur.diet === 'carnivore') {
-        if (hoursSinceFeeding > 12) {
-            feedingUrgency = 'Critical';
-        } else if (hoursSinceFeeding > 6) {
-            feedingUrgency = 'Urgent';
-        }
-    } else {
-        if (hoursSinceFeeding > 24) {
-            feedingUrgency = 'Critical';
-        } else if (hoursSinceFeeding > 12) {
-            feedingUrgency = 'Urgent';
-        }
-    }
+    const feedingUrgency = determineFeedingUrgency({
+        diet: dinosaur.diet,
+        hoursSinceFeeding,
+    });
 
-    let lastFedLabel = '';
-    if (hoursSinceFeeding < 1) {
-        lastFedLabel = 'Less than an hour ago';
-    } else if (hoursSinceFeeding < 24) {
-        lastFedLabel = `${Math.floor(hoursSinceFeeding)} hours ago`;
-    } else {
-        lastFedLabel = `${Math.floor(hoursSinceFeeding / 24)} days ago`;
-    }
+    const lastFedLabel = determineLastFedLabel(hoursSinceFeeding);
 
-    let heartRateStatus = 'Normal';
-    if (
-        dinosaur.species === 'tyrannosaurus' ||
-        dinosaur.species === 'brachiosaurus'
-    ) {
-        if (dinosaur.heartRate > 120) {
-            heartRateStatus = 'Elevated';
-        }
-        if (dinosaur.heartRate > 160) {
-            heartRateStatus = 'Critical';
-        }
-    } else {
-        if (dinosaur.heartRate > 150) {
-            heartRateStatus = 'Elevated';
-        }
-        if (dinosaur.heartRate > 200) {
-            heartRateStatus = 'Critical';
-        }
-    }
+    const heartRateStatus = determineHeartRateStatus({
+        species: dinosaur.species,
+        heartRate: dinosaur.heartRate,
+    });
 
-    let statusColor = 'bg-gray-100 text-gray-800';
-    let statusLabel = 'Unknown';
-    if (dinosaur.containmentStatus === 'secured') {
-        statusColor = 'bg-green-100 text-green-800';
-        statusLabel = 'Secured';
-    } else if (dinosaur.containmentStatus === 'breach') {
-        statusColor = 'bg-red-100 text-red-800';
-        statusLabel = '⚠ BREACH';
-    } else if (dinosaur.containmentStatus === 'maintenance') {
-        statusColor = 'bg-yellow-100 text-yellow-800';
-        statusLabel = 'Under Maintenance';
-    } else if (dinosaur.containmentStatus === 'offline') {
-        statusColor = 'bg-gray-300 text-gray-600';
-        statusLabel = 'Sensors Offline';
-    }
+    const { color: statusColor, label: statusLabel } =
+        determineContainmentStatusDisplay(dinosaur.containmentStatus);
 
-    let parkAlertLevel = 'Low';
-    if (
-        dinosaur.containmentStatus === 'breach' ||
-        (dinosaur.dangerRating >= 4 && heartRateStatus === 'Critical')
-    ) {
-        parkAlertLevel = 'Maximum';
-    } else if (dinosaur.dangerRating >= 3 && heartRateStatus !== 'Normal') {
-        parkAlertLevel = 'High';
-    } else if (dinosaur.dangerRating >= 2) {
-        parkAlertLevel = 'Moderate';
-    }
+    const parkAlertLevel = determineParkAlertLevel({
+        containmentStatus: dinosaur.containmentStatus,
+        dangerRating: dinosaur.dangerRating,
+        heartRateStatus,
+    });
 
     return (
         <main className="max-w-xl mx-auto p-6">
@@ -118,14 +65,21 @@ export const PaddockMonitor = () => {
             <div className="mb-4">
                 <span
                     className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${statusColor}`}
+                    role="status"
+                    aria-label={`Containment status: ${statusLabel}`}
                 >
                     {statusLabel}
                 </span>
             </div>
 
             {parkAlertLevel === 'Maximum' && (
-                <div className="bg-red-600 text-white p-3 rounded mb-4 font-bold">
-                    🚨 ALERT LEVEL: MAXIMUM — Evacuate nearby sectors
+                <div
+                    className="bg-red-600 text-white p-3 rounded mb-4 font-bold"
+                    role="alert"
+                    aria-live="assertive"
+                >
+                    <span aria-label="Warning">🚨</span> ALERT LEVEL: MAXIMUM —
+                    Evacuate nearby sectors
                 </div>
             )}
 
@@ -142,6 +96,7 @@ export const PaddockMonitor = () => {
                                       ? 'text-yellow-600'
                                       : 'text-green-600'
                             }
+                            aria-label={`Heart rate status: ${heartRateStatus}`}
                         >
                             ({heartRateStatus})
                         </span>
@@ -159,6 +114,7 @@ export const PaddockMonitor = () => {
                                       ? 'text-yellow-600'
                                       : ''
                             }
+                            aria-label={`Feeding urgency: ${feedingUrgency}`}
                         >
                             — {feedingUrgency}
                         </span>
