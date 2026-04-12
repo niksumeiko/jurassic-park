@@ -1,5 +1,8 @@
+import type { Dinosaur } from '../types/dinosaur';
+
 type Diet = 'carnivore' | 'herbivore';
 type FeedingUrgency = 'Critical' | 'Urgent' | 'Normal';
+type HeartRateStatus = 'Critical' | 'Elevated' | 'Normal';
 
 export function determineFeedingUrgency({
     diet,
@@ -29,4 +32,25 @@ export function determineLastFedLabel(hoursSinceFeeding: number): string {
     }
 
     return `${Math.floor(hoursSinceFeeding / 24)} days ago`;
+}
+
+export function determineHeartRateStatus({
+    species,
+    heartRate,
+}: {
+    species: Dinosaur['species'];
+    heartRate: number;
+}): HeartRateStatus {
+    const isLargeSpecies =
+        species === 'tyrannosaurus' || species === 'brachiosaurus';
+
+    if (isLargeSpecies) {
+        if (heartRate > 160) return 'Critical';
+        if (heartRate > 120) return 'Elevated';
+        return 'Normal';
+    }
+
+    if (heartRate > 200) return 'Critical';
+    if (heartRate > 150) return 'Elevated';
+    return 'Normal';
 }

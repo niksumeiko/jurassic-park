@@ -3,6 +3,7 @@ import type { Dinosaur } from './types/dinosaur';
 import {
     determineFeedingUrgency,
     determineLastFedLabel,
+    determineHeartRateStatus,
 } from './utils/dinosaur-calculations';
 
 export const PaddockMonitor = () => {
@@ -30,25 +31,10 @@ export const PaddockMonitor = () => {
 
     const lastFedLabel = determineLastFedLabel(hoursSinceFeeding);
 
-    let heartRateStatus = 'Normal';
-    if (
-        dinosaur.species === 'tyrannosaurus' ||
-        dinosaur.species === 'brachiosaurus'
-    ) {
-        if (dinosaur.heartRate > 120) {
-            heartRateStatus = 'Elevated';
-        }
-        if (dinosaur.heartRate > 160) {
-            heartRateStatus = 'Critical';
-        }
-    } else {
-        if (dinosaur.heartRate > 150) {
-            heartRateStatus = 'Elevated';
-        }
-        if (dinosaur.heartRate > 200) {
-            heartRateStatus = 'Critical';
-        }
-    }
+    const heartRateStatus = determineHeartRateStatus({
+        species: dinosaur.species,
+        heartRate: dinosaur.heartRate,
+    });
 
     let statusColor = 'bg-gray-100 text-gray-800';
     let statusLabel = 'Unknown';
