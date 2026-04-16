@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { createMonitorViewModel, type Dinosaur } from './paddockMonitorService';
+import { createMonitorViewModel } from './paddockMonitorService';
+import type { Dinosaur } from './domain/dinosaur/dinosaurService';
 import { fetchDinosaurById } from './domain/dinosaur/dinosaurAdapter';
 
 // use case layer => Orchestrates everything else required to build the view model.
