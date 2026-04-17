@@ -43,18 +43,18 @@ export const getHeartRateStatus = (dinosaur: Dinosaur) => {
         dinosaur.species === 'tyrannosaurus' ||
         dinosaur.species === 'brachiosaurus'
     ) {
-        if (dinosaur.heartRate > 120) {
-            return 'Elevated';
-        }
         if (dinosaur.heartRate > 160) {
             return 'Critical';
         }
-    } else {
-        if (dinosaur.heartRate > 150) {
+        if (dinosaur.heartRate > 120) {
             return 'Elevated';
         }
+    } else {
         if (dinosaur.heartRate > 200) {
             return 'Critical';
+        }
+        if (dinosaur.heartRate > 150) {
+            return 'Elevated';
         }
     }
     return 'Normal';
