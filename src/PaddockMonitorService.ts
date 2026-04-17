@@ -1,8 +1,8 @@
 import {
+    type Dinosaur,
     getFeedingUrgency,
     getHeartRateStatus,
-    type Dinosaur,
-} from './domain/dinosaur/dinosaurService';
+} from './domain/dinosaur/DinosaurService';
 
 export const createMonitorViewModel = (
     currentDate: Date,
