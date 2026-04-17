@@ -9,8 +9,6 @@ export const createMonitorViewModel = (
     dinosaur?: Dinosaur,
     loading?: boolean,
 ) => {
-    // move all the business logic here.
-
     if (!dinosaur || loading) {
         return undefined;
     }
@@ -32,8 +30,6 @@ export const createMonitorViewModel = (
         lastFedLabel = `${Math.floor(hoursSinceFeeding / 24)} days ago`;
     }
 
-    // Domain logic: safe heart rate ranges differ by species size.
-    // Large species (T-Rex, Brachiosaurus) have lower thresholds.
     const heartRateStatus = getHeartRateStatus(dinosaur);
 
     let statusLabel = 'Unknown';
@@ -52,10 +48,6 @@ export const createMonitorViewModel = (
         statusState = 'offline';
     }
 
-    // Domain logic: park alert level is derived from containment status,
-    // danger rating, and heart rate — this is a park-wide safety rule,
-    // not specific to how this view renders.
-
     let parkAlertLevel = 'Low';
     if (
         dinosaur.containmentStatus === 'breach' ||
@@ -68,24 +60,6 @@ export const createMonitorViewModel = (
         parkAlertLevel = 'Moderate';
     }
 
-    /**
-     * This is the view model:
-     * information about dinosaur:
-     * - name
-     * - species
-     * - diet
-     * - paddock
-     * - heart rate
-     * - danger rating
-     * - containment status
-     * - last fed at
-     * - status
-     * - - color
-     * - -label
-     * - park alert level and (shouldDisplayParkAlert?)
-     * - heart rate status
-     * - feeding (label and urgency)
-     */
     return {
         name: dinosaur.name,
         species: dinosaur.species,

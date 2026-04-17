@@ -3,7 +3,6 @@ import { createMonitorViewModel } from './PaddockMonitorService';
 import type { Dinosaur } from './domain/dinosaur/DinosaurService';
 import { fetchDinosaurById } from './domain/dinosaur/DinosaurAdapter';
 
-// use case layer => Orchestrates everything else required to build the view model.
 export const usePaddockMonitor = () => {
     const [dinosaur, setDinosaur] = useState<Dinosaur>();
     const [isLoading, setIsLoading] = useState(true);
