@@ -19,23 +19,25 @@ export const getFeedingUrgency = (
     dinosaur: Dinosaur,
     hoursSinceFeeding: number,
 ) => {
-    // Domain logic: carnivores need feeding more frequently than herbivores.
-    // These thresholds are domain rules, not view concerns.
-    let feedingUrgency = 'Normal';
     if (dinosaur.diet === 'carnivore') {
         if (hoursSinceFeeding > 12) {
-            feedingUrgency = 'Critical';
-        } else if (hoursSinceFeeding > 6) {
-            feedingUrgency = 'Urgent';
+            return 'Critical';
         }
-    } else {
-        if (hoursSinceFeeding > 24) {
-            feedingUrgency = 'Critical';
-        } else if (hoursSinceFeeding > 12) {
-            feedingUrgency = 'Urgent';
+
+        if (hoursSinceFeeding > 6) {
+            return 'Urgent';
         }
     }
-    return feedingUrgency;
+
+    if (hoursSinceFeeding > 24) {
+        return 'Critical';
+    }
+
+    if (hoursSinceFeeding > 12) {
+        return 'Urgent';
+    }
+
+    return 'Normal';
 };
 
 export const getHeartRateStatus = (dinosaur: Dinosaur) => {
