@@ -1,3 +1,4 @@
+import cx from 'classnames';
 import { usePaddockMonitor } from './usePaddockMonitor';
 
 export const PaddockMonitor = () => {
@@ -17,7 +18,21 @@ export const PaddockMonitor = () => {
 
             <div className="mb-4">
                 <span
-                    className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${viewModel.status.color}`}
+                    className={cx(
+                        `inline-block px-3 py-1 rounded-full text-sm font-medium`,
+                        {
+                            'bg-gray-100 text-gray-800':
+                                viewModel.status.state === 'unknown',
+                            'bg-green-100 text-green-800':
+                                viewModel.status.state === 'secured',
+                            'bg-red-100 text-red-800':
+                                viewModel.status.state === 'breach',
+                            'bg-yellow-100 text-yellow-800':
+                                viewModel.status.state === 'wip',
+                            'bg-gray-300 text-gray-600':
+                                viewModel.status.state === 'offline',
+                        },
+                    )}
                 >
                     {viewModel.status.label}
                 </span>
@@ -35,13 +50,14 @@ export const PaddockMonitor = () => {
                     <dd>
                         {viewModel.heartRate} bpm{' '}
                         <span
-                            className={
-                                viewModel.heartRateStatus === 'Critical'
-                                    ? 'text-red-600 font-bold'
-                                    : viewModel.heartRateStatus === 'Elevated'
-                                      ? 'text-yellow-600'
-                                      : 'text-green-600'
-                            }
+                            className={cx({
+                                'text-red-600 font-bold':
+                                    viewModel.heartRateStatus === 'Critical',
+                                'text-yellow-600':
+                                    viewModel.heartRateStatus === 'Elevated',
+                                'text-green-600':
+                                    viewModel.heartRateStatus === 'Normal',
+                            })}
                         >
                             ({viewModel.heartRateStatus})
                         </span>
@@ -52,13 +68,12 @@ export const PaddockMonitor = () => {
                     <dd>
                         {viewModel.feeding.label}{' '}
                         <span
-                            className={
-                                viewModel.feeding.urgency === 'Critical'
-                                    ? 'text-red-600 font-bold'
-                                    : viewModel.feeding.urgency === 'Urgent'
-                                      ? 'text-yellow-600'
-                                      : ''
-                            }
+                            className={cx({
+                                'text-red-600 font-bold':
+                                    viewModel.heartRateStatus === 'Critical',
+                                'text-yellow-600':
+                                    viewModel.heartRateStatus === 'Urgent',
+                            })}
                         >
                             — {viewModel.feeding.urgency}
                         </span>

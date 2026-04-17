@@ -36,20 +36,20 @@ export const createMonitorViewModel = (
     // Large species (T-Rex, Brachiosaurus) have lower thresholds.
     const heartRateStatus = getHeartRateStatus(dinosaur);
 
-    let statusColor = 'bg-gray-100 text-gray-800';
     let statusLabel = 'Unknown';
+    let statusState = 'unknown';
     if (dinosaur.containmentStatus === 'secured') {
-        statusColor = 'bg-green-100 text-green-800';
         statusLabel = 'Secured';
+        statusState = 'secured';
     } else if (dinosaur.containmentStatus === 'breach') {
-        statusColor = 'bg-red-100 text-red-800';
         statusLabel = '⚠ BREACH';
+        statusState = 'breach';
     } else if (dinosaur.containmentStatus === 'maintenance') {
-        statusColor = 'bg-yellow-100 text-yellow-800';
         statusLabel = 'Under Maintenance';
+        statusState = 'wip';
     } else if (dinosaur.containmentStatus === 'offline') {
-        statusColor = 'bg-gray-300 text-gray-600';
         statusLabel = 'Sensors Offline';
+        statusState = 'offline';
     }
 
     // Domain logic: park alert level is derived from containment status,
@@ -96,7 +96,7 @@ export const createMonitorViewModel = (
         containmentStatus: dinosaur.containmentStatus,
         lastFedAt: dinosaur.lastFedAt,
         status: {
-            color: statusColor,
+            state: statusState,
             label: statusLabel,
         },
         parkAlertLevel: parkAlertLevel,
